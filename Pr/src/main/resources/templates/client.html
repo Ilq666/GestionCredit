@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+
+
+>
+<head>
+    <meta charset="UTF-8">
+    <title>client</title>
+    <link rel="stylesheet" href="/webjars/bootstrap/5.3.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/webjars/bootstrap-icons/1.10.3/font/bootstrap-icons.css">
+
+</head>
+<body>
+    <div class="p-3">
+        <div class="card">
+            <div class="card-header">Liste des Clients</div>
+            <div class="card-body">
+                <form method="get" th:action="@{index}">
+                    <ul class="nav nav-pills">
+                        <li>
+                            <label class="form-label">Keyword:</label>
+                        </li>
+                        <li>
+                            <input type="text" class="form-control" name="keyword">
+                        </li>
+                        <li>
+                            <!--button search -->
+                            <button class="btn btn-info">
+                                <i class="bi bi-search"></i>
+                            </button>
+                        </li>
+                    </ul>
+                </form>
+                <table class="table">
+
+                    <tr>
+                        <th>ID</th><th>Nom</th><th>Prenom</th><th>CIN</th><th>Matricule</th><th>Fonction</th><th>Date d'entrer</th><th>Banque</th>
+                    </tr>
+
+
+                    <tr th:each="p:${listClient}">
+                        <td th:text="${p.id}"></td>
+                        <td th:text="${p.nom}"></td>
+                        <td th:text="${p.prenom}"></td>
+                        <td th:text="${p.cin}"></td>
+                        <td th:text="${p.profession.matricule}"></td>
+                        <td th:text="${p.profession.fonction}"></td>
+                        <td th:text="${p.profession.dateEntrer}"></td>
+                        <td th:text="${p.banque.banqueN}"></td>
+
+                        <td>
+                            <!-- btn supprimer-->
+                            <a onclick="javascript:return confirm('Etes vous sûre?')" class="btn btn-danger"
+                               th:href="@{deleteClient(id=${p.id}, keyword=${keyword}, page=${currentPage})}">
+                                <i class="bi bi-trash"></i>
+                            </a>
+                        </td>
+
+                        <td>
+                            <a  class="btn btn-success" th:href="@{editClient(id=${p.id})}" >
+                                <i class="bi bi-pencil"></i>
+                            </a>
+                        </td>
+
+
+                        <td>
+                            <a class="bi bi-download btn btn-outline-warning" th:href="@{/generate-pdf/{clientId}(clientId=${p.id})}"  target="_blank"></a>
+                        </td>
+
+
+                    </tr>
+
+                </table>
+
+                <!-- pour charger les page avec le mot qu on veut chercher -->
+                <ul class="nav nav-pills">
+                    <li th:each="page,status:${pages}">
+                        <a
+                                th:class="${status.index==currentPage?'btn btn-info ms-1':'btn btn-outline-info ms-1'}"
+                                th:href="@{index(page=${status.index}, keyword=${keyword})}"
+                                th:text="${status.index}">
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Client Data</title>
+<style>
+    .cadre{
+    border: 1px solid #000;
+    padding: 10px;
+    }
+</style>
+
+    <style>
+    label {
+        font-weight: bold;
+    }
+    caption {
+        caption-side: top;
+        text-align: center;
+        font-size: 1.2em;
+        margin-bottom: 10px;
+    }
+</style>
+
+
+
+</head>
+<body>
+<img src="/vivalis.jpg" alt="Logo Gauche" style="position: absolute; top: 0; left: 0; width: 100px; height: 100px;">
+
+
+
+<div class="cadre">
+    <caption>Renseignements personnels</caption>
+
+    <div >
+        <label>Nom et Prenom:</label>
+        <input  th:text="${client.nom}" >
+        <input th:text="${client.prenom}">
+    </div>
+
+    <div >
+        <label>Date Naissance:</label>
+        <input th:text="${client.dateNaissance}"  />
+        <label >CIN:</label>
+        <input th:text="${client.cin}" />
+        <label>Date Delivrance:</label>
+        <input th:text="${client.dateDelevrance}"/>
+
+    </div>
+
+    <div class="col">
+        <label >GSM:</label>
+        <input  th:text="${client.gsm}" />
+        <label >Tel domicile:</label>
+        <input  th:text="${client.teld}"/>
+        <label >Tel professionnel:</label>
+        <input  th:text="${client.telp}"/>
+    </div>
+
+    <div >
+        <label>Adresse:</label>
+        <input  th:text="${client.adresse}" />
+    </div>
+
+
+    <div >
+        <label>Situation familiale:</label>
+        <input  th:text="${client.situation_familiale}" />
+        <label >Nombre enfant:</label>
+        <input th:text="${client.nbrEnfant}" />
+
+    </div>
+
+    <div >
+        <label>Habitation:</label>
+        <input th:text="${client.habitation}" />
+    </div >
+
+</div>
+<p></p>
+<div class="cadre">
+    <caption>Renseignement professionels</caption>
+    <div>
+        <label >Nom de L'Etablissement :</label>
+        <input th:text="${client.profession.nomE}" >
+    </div>
+
+    <div >
+        <label >Fonction :</label>
+        <input th:text="${client.profession.fonction}" >
+    </div>
+
+    <div >
+        <label >Matricule :</label>
+        <input  th:text="${client.profession.matricule}" >
+    </div>
+
+    <div >
+        <label >Date d'entree :</label>
+        <input th:text="${client.profession.dateEntrer}">
+    </div>
+</div>
+<p></p>
+<div class="cadre">
+    <caption>Reference bancaire :</caption>
+
+    <div >
+        <label >NRIB :</label>
+        <input th:text="${client.banque.nrib}"  >
+    </div>
+
+    <div >
+        <label >Banque :</label>
+        <input  th:text="${client.banque.banqueN}" >
+    </div>
+
+    <div >
+        <label >Tel Agence :</label>
+        <input th:text="${client.banque.telAgence}" >
+    </div>
+</div>
+<p></p>
+<div class="cadre">
+    <caption>Financement demande</caption>
+    <div >
+        <label >Mantant:</label>
+        <input th:text="${client.credit.mantant}"  >
+    </div>
+
+    <div >
+        <label >Nombre Echeance :</label>
+        <input th:text="${client.credit.nbrEch}" >
+    </div>
+
+    <div >
+        <label >Mensualite :</label>
+        <input  th:text="${client.credit.mensualite}" >
+    </div>
+
+    <div >
+        <label >Date Demande :</label>
+        <input  th:text="${client.credit.dateDemande}" >
+    </div>
+
+</div>
+</body>
+</html>
