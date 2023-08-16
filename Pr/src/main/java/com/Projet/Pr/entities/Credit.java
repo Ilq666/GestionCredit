@@ -24,7 +24,7 @@ public class Credit {
     private String mensualite;
     @Temporal(TemporalType.DATE)
     private Date dateDemande;
-    @ManyToOne
+    @OneToOne
     @JoinColumn(name = "client_id")
     private Client client;
 

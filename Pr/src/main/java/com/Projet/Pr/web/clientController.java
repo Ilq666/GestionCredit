@@ -153,15 +153,79 @@ public class clientController {
     @GetMapping("/editClient")
     public String editClient(@RequestParam(name = "id") Long id, Model model){
         Client client=clientRepository.findById(id).get();
-
-
         model.addAttribute("client",client);
-
-
-
-
         return "editClient";
+
     }
+
+    @PostMapping("/saveEditedClient")
+    public String saveEditedClient(@ModelAttribute("client") Client editedClient) {
+        // Chargez le client existant depuis la base de données
+        Client existingClient = clientRepository.findById(editedClient.getId()).orElse(null);
+
+        if (existingClient != null) {
+            // Mettez à jour tous les attributs du client avec les données du formulaire
+            existingClient.setNom(editedClient.getNom());
+            existingClient.setPrenom(editedClient.getPrenom());
+            existingClient.setDateNaissance(editedClient.getDateNaissance());
+            existingClient.setCin(editedClient.getCin());
+            existingClient.setDateDelevrance(editedClient.getDateDelevrance());
+            existingClient.setGsm(editedClient.getGsm());
+            existingClient.setTeld(editedClient.getTeld());
+            existingClient.setTelp(editedClient.getTelp());
+            existingClient.setAdresse(editedClient.getAdresse());
+            existingClient.setSituation_familiale(editedClient.getSituation_familiale());
+            existingClient.setNbrEnfant(editedClient.getNbrEnfant());
+            existingClient.setHabitation(editedClient.getHabitation());
+
+            // Mettez à jour d'autres attributs du client
+
+            // Récupérez la profession associée au client
+            Profession existingProfession = existingClient.getProfession();
+            if (existingProfession != null) {
+                // Mettez à jour tous les attributs de la profession avec les données du formulaire
+                existingProfession.setNomE(editedClient.getProfession().getNomE());
+                existingProfession.setFonction(editedClient.getProfession().getFonction());
+                existingProfession.setMatricule(editedClient.getProfession().getMatricule());
+                existingProfession.setDateEntrer(editedClient.getProfession().getDateEntrer());
+                // Mettez à jour d'autres attributs de la profession
+
+                // Enregistrez les changements de la profession dans la base de données
+                ProfessionRepository.save(existingProfession);
+            }
+            Banque existingBanque = existingClient.getBanque();
+            if (existingBanque != null) {
+                // Mettez à jour tous les attributs de la banque avec les données du formulaire
+                existingBanque.setNrib(editedClient.getBanque().getNrib());
+                existingBanque.setBanqueN(editedClient.getBanque().getBanqueN());
+                existingBanque.setTelAgence(editedClient.getBanque().getTelAgence());
+                // Mettez à jour d'autres attributs de la banque
+
+                // Enregistrez les changements de la banque dans la base de données
+                BanqueRepository.save(existingBanque);
+            }
+
+            Credit existingCredit = existingClient.getCredit();
+            if (existingCredit != null) {
+                // Mettez à jour tous les attributs du crédit avec les données du formulaire
+                existingCredit.setMantant(editedClient.getCredit().getMantant());
+                existingCredit.setNbrEch(editedClient.getCredit().getNbrEch());
+                existingCredit.setMensualite(editedClient.getCredit().getMensualite());
+                existingCredit.setDateDemande(editedClient.getCredit().getDateDemande());
+                // Mettez à jour d'autres attributs du crédit
+
+                // Enregistrez les changements du crédit dans la base de données
+                CreditRepository.save(existingCredit);
+            }
+
+            // Enregistrez les changements du client dans la base de données
+            clientRepository.save(existingClient);
+        }
+
+        return "editClient"; // Redirige vers la liste des clients (ou une autre page)
+    }
+
+
 
 
 
