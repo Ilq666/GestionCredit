@@ -65,7 +65,7 @@ public class clientController {
     @GetMapping("/index")
     public String index(Model model,
                         @RequestParam(name = "page",defaultValue = "0") int page,
-                        @RequestParam(name = "size",defaultValue = "20") int size,
+                        @RequestParam(name = "size",defaultValue = "5") int size,
                         @RequestParam(name = "keyword",defaultValue = "") String kw
     ){
         Page<Client> pageClient = clientRepository.findByNomContains(kw, PageRequest.of(page,size));
