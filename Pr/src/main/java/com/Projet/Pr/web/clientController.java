@@ -226,7 +226,37 @@ public class clientController {
     }
 
 
+    @GetMapping("/pdf-Engagement/{clientId}")
+    public void EngagementPDF(@PathVariable Long clientId, HttpServletResponse response) throws IOException {
+        response.setContentType("application/pdf");
+        response.setHeader("Content-Disposition", "inline; filename=client_data.pdf");
 
+        Optional<Client> clientOptional = clientRepository.findById(clientId);
+
+        if (clientOptional.isPresent()) {
+            Client client = clientOptional.get();
+
+            // Prepare Thymeleaf context
+            Context context = new Context();
+            context.setVariable("client", client);
+
+
+            // Process Thymeleaf template
+            String processedHtml = templateEngine.process("engagement", context); // Use the TemplateEngine
+
+
+            // Generate PDF from processed HTML
+            try (OutputStream outputStream = response.getOutputStream()) {
+                PdfRendererBuilder builder = new PdfRendererBuilder();
+                builder.withHtmlContent(processedHtml, "/");
+                builder.toStream(outputStream);
+                builder.run();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            // ... (use OpenHTMLToPDF or other PDF generation library)
+        }
+    }
 
 
 

@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>engagement</title>
+    <style>
+
+        /* Utilisation de Thymeleaf pour ajouter le matricule dans le style */
+        span.Gras {
+            color: dark;
+            font-weight: bold;
+        }
+        .centre {
+            text-align: center;
+        }
+        .souligne {
+            text-decoration: underline;
+        }
+        .gauche {
+            text-align: right;
+        }
+
+
+
+
+    </style>
+</head>
+
+<body>
+<div>
+    <label>Date:</label> <span class="Gras " th:text="${#dates.format(#dates.createNow(), 'dd-MM-yyyy')}"></span>
+</div>
+<div>
+    <label>N du dossier:</label> <span th:text="${client.id}"></span>
+</div>
+<div>
+    <label>Nom de l'Agence/Correspondant: </label><span class="Gras">STE BOUTAKIOUT</span>
+</div>
+<div>
+    <label>Code: </label><span class="Gras">222</span>
+</div>
+<h2 class="centre souligne">ENGAGEMENT VALANT CESSION CREANCE POUR L'OCTOROI D'UN CREDIT</h2>
+<label>
+    <span class="Gras"><u> je soussigne:</u></span>
+</label>
+<div>
+    <label>Nom et Prenom:</label>
+    <span class="Gras"  th:text="${client.nom}"></span> <span class="Gras"  th:text="${client.prenom}"></span>
+</div>
+<label>Adminisration:</label>
+<div>
+    <label>N CIN:</label>
+    <span class="Gras"  th:text="${client.cin}" ></span>
+</div>
+<div>
+    <label>Matricule PPR:</label>
+    <span class="Gras" th:text="${client.profession.matricule}" ></span>
+</div>
+
+<p>1.Autorise la &lt;&lt;PPR&gt;&gt; à communiquer à la société SOFAC la quotité cessible de mon salaire.</p>
+<p>2.Déclare avoir bénéficié d'un crédit auprès de la société SOFAC, dont les caractéristiques sont :</p>
+<ul>
+    <li>Montant du prêt net d'intérêt : <span class="Gras" th:text="${client.profession.matricule}"></span></li>
+    <li>Frais de dossier : <span class="Gras">330DH</span></li>
+    <li>Frais d'assurance :</li>
+    <li>Taux Effectif Global (TEG) appliqué :</li>
+    <li>Nombres De Jours Différés :</li>
+    <li>Montant de la mensualité :</li>
+    <li>Montant de la mensualité en lettres :</li>
+    <li>Nombre de Mensualité :</li>
+    <li>Montant total de la créance (intérêt compris) :</li>
+</ul>
+<p>3.Autorise la &lt;&lt;PPR&gt;&gt;à retenir au profit  de la société SOFAC un précompte mensuel dont les caractéristiques sont :</p>
+<ul>
+    <li>Montant de precompte mensuel : <span class="matricule" th:text="${client.profession.matricule}"></span></li>
+    <li>Date de début de précompte : <span class="Gras">330DH</span></li>
+    <li>Date de fin de précompte (*):</li>
+</ul>
+<p>Au cas où je serai amené à partir en retraite pour quelque motif que ce soit (date normale ou anticipée) j'autorise la caisse marocaine
+    des retraites &lt;&lt;CMR&gt;&gt; au tout autre organisme auprès duquel je percevrai mes pensions ou autres emoluments, à retenir au
+    profit de la société SOFAC la quotité cessible de ma pension dans la limite du montant de la mensualite sus-visee et ce,jusqu'à concurrence
+    du reliquat restant dû à la date de mon départ, du prêt dont les caractéristiques sont mentionnées ci-dessus pour ce faire,
+    j'autorise d'ores et déjà la paierie principale des remunerations à communiquer à la &lt;&lt;CMR&gt;&gt; les caractéristiques
+    ainsi que le reliquat restant du prêt au jour de mon départ a la retraite
+</p>
+<p><span class="Gras"> (*)Cette date pourrait être prorogée jusqu au remboursement intégral de la creance</span></p>
+<p class="gauche">Signature légalisée du cédant</p>
+<p class="gauche">(Précédée de la mention:&lt;&lt;lu et Approuvé&gt;&gt;)</p>
+</body>
+</html>
