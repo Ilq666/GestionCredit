@@ -46,10 +46,10 @@
       <ul class="navbar-nav mb-2 mb-lg-0 float-end">
       <li class="nav-item dropdown">
         <a class="nav-link dropdown-toggle" href="#"  role="button" data-bs-toggle="dropdown" aria-expanded="false">
-         [[USER]]
+          <span th:text="${#authentication.name}"></span>
         </a>
         <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-          <li><a class="dropdown-item">LOGOUT</a></li>
+          <li><a class="dropdown-item" th:href="@{/logout}">LOGOUT</a></li>
           <li><a class="dropdown-item" >Profil</a></li>
         </ul>
       </li>

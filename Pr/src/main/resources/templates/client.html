@@ -49,8 +49,8 @@
                         <td th:text="${p.profession.dateEntrer}"></td>
                         <td th:text="${p.banque.banqueN}"></td>
 
-                        <td>
-                            <!-- btn supprimer-->
+                        <td th:if="${#authorization.expression('hasRole(''ADMIN'')')}">
+                        <!-- btn supprimer-->
                             <a onclick="javascript:return confirm('Etes vous sûre?')" class="btn btn-danger"
                                th:href="@{deleteClient(id=${p.id}, keyword=${keyword}, page=${currentPage})}">
                                 <i class="bi bi-trash"></i>

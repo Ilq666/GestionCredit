@@ -7,6 +7,7 @@ import com.Projet.Pr.repository.CreditRepository;
 import com.Projet.Pr.repository.BanqueRepository;
 import com.Projet.Pr.repository.ProfessionRepository;
 import com.openhtmltopdf.pdfboxout.PdfRendererBuilder;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.thymeleaf.TemplateEngine;
 
 
@@ -57,9 +58,10 @@ public class clientController {
 
 
 
-    @GetMapping("/ilyas")
-    public String ilyas(){
-    return "ilyas";
+    @GetMapping("/")
+    @PreAuthorize("hasRole('USER')")
+    public String home(){
+    return "redirect:/index";
     }
 
     @GetMapping("/index")
@@ -76,6 +78,7 @@ public class clientController {
         return "client";
     }
     @GetMapping("/deleteClient")
+    @PreAuthorize("hasRole('ADMIN')")
     public String deleteClient(@RequestParam(name = "id") Long id, String keyword, int page){
         clientRepository.deleteById(id);
         //pour rediercter vers /index
