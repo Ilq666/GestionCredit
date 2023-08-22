@@ -7,6 +7,10 @@ import com.Projet.Pr.repository.CreditRepository;
 import com.Projet.Pr.repository.BanqueRepository;
 import com.Projet.Pr.repository.ProfessionRepository;
 import com.openhtmltopdf.pdfboxout.PdfRendererBuilder;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.thymeleaf.TemplateEngine;
 
@@ -37,6 +41,7 @@ import org.thymeleaf.context.Context;
 import org.thymeleaf.TemplateEngine;
 import java.io.IOException;
 import java.io.StringWriter;
+import java.util.List;
 import java.util.Optional;
 
 
@@ -261,6 +266,103 @@ public class clientController {
         }
     }
 
+    @GetMapping("/excel")
+    public void generateExcel(HttpServletResponse response) throws IOException {
+        // Créez un nouveau classeur Excel au format XLSX
+        Workbook workbook = new XSSFWorkbook();
+
+        // Créez une feuille dans le classeur
+        Sheet sheet = workbook.createSheet("Clients");
+
+        // Créez une ligne (ligne d'en-tête)
+        Row headerRow = sheet.createRow(0);
+        headerRow.createCell(0).setCellValue("ID");
+        headerRow.createCell(1).setCellValue("Demande de crédit");
+        headerRow.createCell(2).setCellValue("Nom");
+        headerRow.createCell(3).setCellValue("Prénom");
+        headerRow.createCell(4).setCellValue("Date de naissance");
+        headerRow.createCell(5).setCellValue("CIN");
+        headerRow.createCell(6).setCellValue("Date de délivrance");
+        headerRow.createCell(7).setCellValue("GSM");
+        headerRow.createCell(8).setCellValue("Tél. domicile");
+        headerRow.createCell(9).setCellValue("Tél. professionnel");
+        headerRow.createCell(10).setCellValue("Adresse");
+        headerRow.createCell(11).setCellValue("Situation familiale");
+        headerRow.createCell(12).setCellValue("Nombre d'enfants");
+        headerRow.createCell(13).setCellValue("Habitation");
+
+        headerRow.createCell(15).setCellValue("NRIB");
+        headerRow.createCell(16).setCellValue("Banque");
+        headerRow.createCell(17).setCellValue("Tél. Agence");
+
+        headerRow.createCell(18).setCellValue("Montant");
+        headerRow.createCell(19).setCellValue("Nombre d'échéances");
+        headerRow.createCell(20).setCellValue("Mensualité");
+        headerRow.createCell(21).setCellValue("Date de demande");
+
+        headerRow.createCell(22).setCellValue("Nom de l'entreprise");
+        headerRow.createCell(23).setCellValue("Fonction");
+        headerRow.createCell(24).setCellValue("Matricule");
+        headerRow.createCell(25).setCellValue("Date d'entrée");
 
 
+        // Récupérez la liste des clients depuis la base de données
+        List<Client> clients = clientRepository.findAll();
+
+        // Remplissez les données des clients dans les lignes suivantes
+        int rowNum = 1;
+        for (Client client : clients) {
+            Row row = sheet.createRow(rowNum++);
+            row.createCell(0).setCellValue(client.getId());
+            row.createCell(1).setCellValue(client.getDemandeCredit());
+            row.createCell(2).setCellValue(client.getNom());
+            row.createCell(3).setCellValue(client.getPrenom());
+            row.createCell(4).setCellValue(client.getDateNaissance().toString());
+            row.createCell(5).setCellValue(client.getCin());
+            row.createCell(6).setCellValue(client.getDateDelevrance().toString());
+            row.createCell(7).setCellValue(client.getGsm());
+            row.createCell(8).setCellValue(client.getTeld());
+            row.createCell(9).setCellValue(client.getTelp());
+            row.createCell(10).setCellValue(client.getAdresse());
+            row.createCell(11).setCellValue(client.getSituation_familiale());
+            row.createCell(12).setCellValue(client.getNbrEnfant());
+            row.createCell(13).setCellValue(client.getHabitation());
+
+            if (client.getBanque() != null) {
+                row.createCell(15).setCellValue(client.getBanque().getNrib());
+                row.createCell(16).setCellValue(client.getBanque().getBanqueN());
+                row.createCell(17).setCellValue(client.getBanque().getTelAgence());
+            }
+
+            if (client.getCredit() != null) {
+                row.createCell(18).setCellValue(client.getCredit().getMantant());
+                row.createCell(19).setCellValue(client.getCredit().getNbrEch());
+                row.createCell(20).setCellValue(client.getCredit().getMensualite());
+                row.createCell(21).setCellValue(client.getCredit().getDateDemande().toString());
+            }
+
+            if (client.getProfession() != null) {
+                row.createCell(22).setCellValue(client.getProfession().getNomE());
+                row.createCell(23).setCellValue(client.getProfession().getFonction());
+                row.createCell(24).setCellValue(client.getProfession().getMatricule());
+                row.createCell(25).setCellValue(client.getProfession().getDateEntrer().toString());
+            }
+
+
+        }
+
+        // Préparez la réponse HTTP
+        response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+        response.setHeader("Content-Disposition", "attachment; filename=clients.xlsx");
+
+        // Écrivez le classeur dans la réponse HTTP
+        workbook.write(response.getOutputStream());
+
+        // Fermez le classeur Excel
+        workbook.close();
+    }
 }
+
+
+
+
