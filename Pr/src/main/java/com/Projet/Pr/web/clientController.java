@@ -10,8 +10,11 @@ import com.openhtmltopdf.pdfboxout.PdfRendererBuilder;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.thymeleaf.TemplateEngine;
 
 
@@ -41,6 +44,8 @@ import org.thymeleaf.context.Context;
 import org.thymeleaf.TemplateEngine;
 import java.io.IOException;
 import java.io.StringWriter;
+import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 
@@ -62,37 +67,37 @@ public class clientController {
     private final TemplateEngine templateEngine;
 
 
-
     @GetMapping("/")
     @PreAuthorize("hasRole('USER')")
-    public String home(){
-    return "redirect:/index";
+    public String home() {
+        return "redirect:/index";
     }
 
     @GetMapping("/index")
     public String index(Model model,
-                        @RequestParam(name = "page",defaultValue = "0") int page,
-                        @RequestParam(name = "size",defaultValue = "5") int size,
-                        @RequestParam(name = "keyword",defaultValue = "") String kw
-    ){
-        Page<Client> pageClient = clientRepository.findByNomContains(kw, PageRequest.of(page,size));
-        model.addAttribute("listClient",pageClient.getContent());
-        model.addAttribute("pages",new int[pageClient.getTotalPages()]);
-        model.addAttribute("currentPage",page);
-        model.addAttribute("keyword",kw);
+                        @RequestParam(name = "page", defaultValue = "0") int page,
+                        @RequestParam(name = "size", defaultValue = "5") int size,
+                        @RequestParam(name = "keyword", defaultValue = "") String kw
+    ) {
+        Page<Client> pageClient = clientRepository.findByNomContains(kw, PageRequest.of(page, size));
+        model.addAttribute("listClient", pageClient.getContent());
+        model.addAttribute("pages", new int[pageClient.getTotalPages()]);
+        model.addAttribute("currentPage", page);
+        model.addAttribute("keyword", kw);
         return "client";
     }
+
     @GetMapping("/deleteClient")
     @PreAuthorize("hasRole('ADMIN')")
-    public String deleteClient(@RequestParam(name = "id") Long id, String keyword, int page){
+    public String deleteClient(@RequestParam(name = "id") Long id, String keyword, int page) {
         clientRepository.deleteById(id);
         //pour rediercter vers /index
-        return "redirect:/index?page="+page+"&keyword="+keyword;
+        return "redirect:/index?page=" + page + "&keyword=" + keyword;
     }
 
     @GetMapping("/formulaire")
-    public String formulaire(Model model ){
-        model.addAttribute("client",new Client());
+    public String formulaire(Model model) {
+        model.addAttribute("client", new Client());
         model.addAttribute("credit", new Credit());
         model.addAttribute("banque", new Banque());
         model.addAttribute("profession", new Profession());
@@ -101,8 +106,8 @@ public class clientController {
     }
 
     @PostMapping("/saveClient")
-    public String saveClient(@Valid  Client client, @Valid  Credit credit, @Valid  Banque banque, @Valid  Profession profession,
-                             BindingResult bindingResult){
+    public String saveClient(@Valid Client client, @Valid Credit credit, @Valid Banque banque, @Valid Profession profession,
+                             BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             return "formulaire";
         }
@@ -157,11 +162,10 @@ public class clientController {
     }
 
 
-
     @GetMapping("/editClient")
-    public String editClient(@RequestParam(name = "id") Long id, Model model){
-        Client client=clientRepository.findById(id).get();
-        model.addAttribute("client",client);
+    public String editClient(@RequestParam(name = "id") Long id, Model model) {
+        Client client = clientRepository.findById(id).get();
+        model.addAttribute("client", client);
         return "editClient";
 
     }
@@ -291,19 +295,19 @@ public class clientController {
         headerRow.createCell(12).setCellValue("Nombre d'enfants");
         headerRow.createCell(13).setCellValue("Habitation");
 
-        headerRow.createCell(15).setCellValue("NRIB");
-        headerRow.createCell(16).setCellValue("Banque");
-        headerRow.createCell(17).setCellValue("Tél. Agence");
+        headerRow.createCell(14).setCellValue("NRIB");
+        headerRow.createCell(15).setCellValue("Banque");
+        headerRow.createCell(16).setCellValue("Tél. Agence");
 
-        headerRow.createCell(18).setCellValue("Montant");
-        headerRow.createCell(19).setCellValue("Nombre d'échéances");
-        headerRow.createCell(20).setCellValue("Mensualité");
-        headerRow.createCell(21).setCellValue("Date de demande");
+        headerRow.createCell(17).setCellValue("Montant");
+        headerRow.createCell(18).setCellValue("Nombre d'échéances");
+        headerRow.createCell(19).setCellValue("Mensualité");
+        headerRow.createCell(20).setCellValue("Date de demande");
 
-        headerRow.createCell(22).setCellValue("Nom de l'entreprise");
-        headerRow.createCell(23).setCellValue("Fonction");
-        headerRow.createCell(24).setCellValue("Matricule");
-        headerRow.createCell(25).setCellValue("Date d'entrée");
+        headerRow.createCell(21).setCellValue("Nom de l'entreprise");
+        headerRow.createCell(22).setCellValue("Fonction");
+        headerRow.createCell(23).setCellValue("Matricule");
+        headerRow.createCell(24).setCellValue("Date d'entrée");
 
 
         // Récupérez la liste des clients depuis la base de données
@@ -329,23 +333,23 @@ public class clientController {
             row.createCell(13).setCellValue(client.getHabitation());
 
             if (client.getBanque() != null) {
-                row.createCell(15).setCellValue(client.getBanque().getNrib());
-                row.createCell(16).setCellValue(client.getBanque().getBanqueN());
-                row.createCell(17).setCellValue(client.getBanque().getTelAgence());
+                row.createCell(14).setCellValue(client.getBanque().getNrib());
+                row.createCell(15).setCellValue(client.getBanque().getBanqueN());
+                row.createCell(16).setCellValue(client.getBanque().getTelAgence());
             }
 
             if (client.getCredit() != null) {
-                row.createCell(18).setCellValue(client.getCredit().getMantant());
-                row.createCell(19).setCellValue(client.getCredit().getNbrEch());
-                row.createCell(20).setCellValue(client.getCredit().getMensualite());
-                row.createCell(21).setCellValue(client.getCredit().getDateDemande().toString());
+                row.createCell(17).setCellValue(client.getCredit().getMantant());
+                row.createCell(18).setCellValue(client.getCredit().getNbrEch());
+                row.createCell(19).setCellValue(client.getCredit().getMensualite());
+                row.createCell(20).setCellValue(client.getCredit().getDateDemande().toString());
             }
 
             if (client.getProfession() != null) {
-                row.createCell(22).setCellValue(client.getProfession().getNomE());
-                row.createCell(23).setCellValue(client.getProfession().getFonction());
-                row.createCell(24).setCellValue(client.getProfession().getMatricule());
-                row.createCell(25).setCellValue(client.getProfession().getDateEntrer().toString());
+                row.createCell(21).setCellValue(client.getProfession().getNomE());
+                row.createCell(22).setCellValue(client.getProfession().getFonction());
+                row.createCell(23).setCellValue(client.getProfession().getMatricule());
+                row.createCell(24).setCellValue(client.getProfession().getDateEntrer().toString());
             }
 
 
@@ -361,8 +365,82 @@ public class clientController {
         // Fermez le classeur Excel
         workbook.close();
     }
+
+    @PostMapping("/importExcel")
+    public String importExcel(@RequestParam("file") MultipartFile file, RedirectAttributes redirectAttributes) {
+        if (file.isEmpty()) {
+            redirectAttributes.addFlashAttribute("message", "Veuillez sélectionner un fichier.");
+            return "redirect:/index";
+        }
+
+        try (Workbook workbook = new XSSFWorkbook(file.getInputStream())) {
+            Sheet sheet = workbook.getSheetAt(0); // Supposons que le fichier Excel a une seule feuille de calcul
+
+            Iterator<Row> iterator = sheet.iterator();
+
+            while (iterator.hasNext()) {
+                Row currentRow = iterator.next();
+
+                if (currentRow.getRowNum() == 1) {
+                    // Ignore la première ligne (en-têtes)
+                    continue;
+                }
+
+                // Créer un nouvel objet Client à partir des données de la ligne
+                Client client = new Client();
+                client.setDemandeCredit(currentRow.getCell(0).getStringCellValue());
+                client.setNom(currentRow.getCell(1).getStringCellValue());
+                client.setPrenom(currentRow.getCell(2).getStringCellValue());
+                client.setDateNaissance(currentRow.getCell(3).getDateCellValue());
+                client.setCin(currentRow.getCell(4).getStringCellValue());
+                client.setDateDelevrance(currentRow.getCell(5).getDateCellValue());
+                client.setGsm(currentRow.getCell(6).getStringCellValue());
+                client.setTeld(currentRow.getCell(7).getStringCellValue());
+                client.setTelp(currentRow.getCell(8).getStringCellValue());
+                client.setAdresse(currentRow.getCell(9).getStringCellValue());
+                client.setSituation_familiale(currentRow.getCell(10).getStringCellValue());
+                client.setNbrEnfant((int) currentRow.getCell(11).getNumericCellValue());
+                client.setHabitation(currentRow.getCell(12  ).getStringCellValue());
+                // Sauvegarder le Client dans la base de données
+                clientRepository.save(client);
+
+               /* Banque banque = new Banque();
+
+                // Extraire les données de la feuille Excel
+                banque.setNrib(currentRow.getCell(13).getStringCellValue());
+                banque.setBanqueN(currentRow.getCell(14).getStringCellValue());
+                banque.setTelAgence(currentRow.getCell(15).getStringCellValue());
+                BanqueRepository.save(banque);
+
+
+                Credit credit = new Credit();
+
+                // Extraire les données de la feuille Excel
+                credit.setMantant((int) currentRow.getCell(16).getNumericCellValue());
+                credit.setNbrEch(currentRow.getCell(17).getStringCellValue());
+                credit.setMensualite(currentRow.getCell(18).getStringCellValue());
+                // Si la dateDemande est stockée sous forme de date dans le fichier Excel
+                Date dateDemande = currentRow.getCell(19).getDateCellValue();
+                credit.setDateDemande(dateDemande);
+                CreditRepository.save(credit);
+
+                Profession profession = new Profession();
+                profession.setNomE(currentRow.getCell(20).getStringCellValue());
+                profession.setFonction(currentRow.getCell(21).getStringCellValue());
+                profession.setMatricule(currentRow.getCell(22).getStringCellValue());
+                Date dateEntrer = currentRow.getCell(23).getDateCellValue();
+                profession.setDateEntrer(dateEntrer);
+                ProfessionRepository.save(profession);*/
+
+            }
+
+            redirectAttributes.addFlashAttribute("message", "Importation réussie.");
+        } catch (IOException e) {
+            e.printStackTrace();
+            redirectAttributes.addFlashAttribute("message", "Une erreur s'est produite lors de l'importation.");
+        }
+
+        return "redirect:/index"; // Redirigez l'utilisateur vers la page d'accueil ou une autre page appropriée.
+    }
+
 }
-
-
-
-
